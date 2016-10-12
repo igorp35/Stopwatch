@@ -10,6 +10,7 @@ public class StopWatchActivity extends Activity {
 
     private boolean running;
     private int seconds;
+    private boolean wasRunning;
 //================================================================================================//
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,13 +19,20 @@ public class StopWatchActivity extends Activity {
         if(savedInstanceState != null){
             seconds = savedInstanceState.getInt("seconds");
             running = savedInstanceState.getBoolean("running");
+            wasRunning = savedInstanceState.getBoolean("wasRunning");
         }
         runTime();
+    }
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        savedInstanceState.putInt("seconds", seconds);
+        savedInstanceState.putBoolean("running", running);
+        savedInstanceState.putBoolean("wasRunning", wasRunning);
     }
 //================================================================================================//
 
     public void onClickStart(View v){
-        running = true;
+
+              running = true;
     }
 
     public void onClickStop(View v){
@@ -56,9 +64,20 @@ public class StopWatchActivity extends Activity {
         });
     }
 //================================================================================================//
-  public void onSaveInstanceState(Bundle savedInstanceState){
-      savedInstanceState.putInt("seconds", seconds);
-      savedInstanceState.putBoolean("running", running);
-  }
-//================================================================================================//
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        wasRunning = running;
+        running = false;
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+if(wasRunning)
+      running = true;
+    }
+    //================================================================================================//
 }
